@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+<!-- include aframe-ar.js -->
+<script src="./aframe-ar.js"></script>
+
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+	<button id="shuffler" style="z-index: 100; position: fixed; top: 10px; left: 10px">Shuffle</button>
+	<a-scene embedded arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+		<a-assets>
+			<img id="luke" src="luke.jpg">
+			<img id="darth" src="darth.jpg">
+			<img id="han" src="han.jpg">
+			<img id="trooper" src="trooper.jpg">
+		</a-assets>
+
+		<!-- handle matrix marker -->
+		<a-marker type='barcode' value='8'>
+			<a-image class="cardImage" src="#darth" width="2.5" height="3.5" position="0 0 0" rotation="270 0 0" />
+		</a-marker>
+
+		<a-marker type='barcode' value='9'>
+			<a-image class="cardImage" src="#luke" width="2.5" height="3.5" position="0 0 0" rotation="270 0 0" />
+		</a-marker>
+		
+		<a-marker type='barcode' value='10'>
+			<a-image class="cardImage" src="#han" width="2.5" height="3.5" position="0 0 0" rotation="270 0 0" />
+		</a-marker>
+
+		<a-marker type='barcode' value='11'>
+			<a-image class="cardImage" src="#trooper" width="2.5" height="3.5" position="0 0 0" rotation="270 0 0" />
+		</a-marker>
+
+		<!-- add a simple camera -->
+		<a-entity camera></a-entity>
+	</a-scene>
+	<script>
+		document.addEventListener('click', function(event) {
+			if (!event.target.matches('#shuffler')) { return null }
+			var els = document.querySelectorAll('.cardImage');
+			var sources = Array.from(els).map(function(e) { return e.attributes.src.nodeValue })
+			var finalIndex = sources.length - 1
+
+			for(var i = finalIndex; i > 0; i--){
+				  const j = Math.floor(Math.random() * i)
+				  const temp = sources[i]
+				  sources[i] = sources[j]
+				  sources[j] = temp
+			}
+			els.forEach(function(e, i) { e.setAttribute('src', sources[i]) })
+		}, false);
+	</script>
+</body>
+
+</html>
