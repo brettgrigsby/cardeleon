@@ -5,12 +5,17 @@
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
 	<button id="shuffler" style="z-index: 100; position: fixed; top: 10px; left: 10px">Shuffle</button>
+	<button id="toggleGame" style="z-index: 100; position: fixed; top: 10px; left: 80px">Toggle Game</button>
 	<a-scene embedded arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
 		<a-assets>
 			<img id="luke" src="luke.jpg">
 			<img id="darth" src="darth.jpg">
 			<img id="han" src="han.jpg">
 			<img id="trooper" src="trooper.jpg">
+			<img id="black" src="black.jpeg">
+			<img id="blue" src="blue.jpeg">
+			<img id="green" src="green.jpeg">
+			<img id="red" src="red.jpeg">
 		</a-assets>
 
 		<!-- handle matrix marker -->
@@ -35,18 +40,28 @@
 	</a-scene>
 	<script>
 		document.addEventListener('click', function(event) {
-			if (!event.target.matches('#shuffler')) { return null }
-			var els = document.querySelectorAll('.cardImage');
-			var sources = Array.from(els).map(function(e) { return e.attributes.src.nodeValue })
-			var finalIndex = sources.length - 1
+			if (event.target.matches('#shuffler')) {
+				var els = document.querySelectorAll('.cardImage');
+				var sources = Array.from(els).map(function(e) { return e.attributes.src.nodeValue })
+				var finalIndex = sources.length - 1
 
-			for(var i = finalIndex; i > 0; i--){
-				  const j = Math.floor(Math.random() * i)
-				  const temp = sources[i]
-				  sources[i] = sources[j]
-				  sources[j] = temp
+				for(var i = finalIndex; i > 0; i--){
+					  const j = Math.floor(Math.random() * i)
+					  const temp = sources[i]
+					  sources[i] = sources[j]
+					  sources[j] = temp
+				}
+				els.forEach(function(e, i) { e.setAttribute('src', sources[i]) })
 			}
-			els.forEach(function(e, i) { e.setAttribute('src', sources[i]) })
+			if (event.target.matches('#toggleGame')) {
+				var prevGame = window.selectedGame || 'destiny'
+				window.selectedGame = prevGame === 'destiny' ? 'magic' : 'destiny';
+				var magicCards = ['black', 'blue', 'green', 'red']
+				var destinyCards = ['darth', 'luke', 'han', 'trooper']
+				var els = document.querySelectorAll('.cardImage');
+				var currentSet = window.selectedGame === 'magic' ? magicCards : destinyCards;
+				els.forEach(function(e, i) { e.setAttribute('src', "#" + currentSet[i]) })
+			}
 		}, false);
 	</script>
 </body>
